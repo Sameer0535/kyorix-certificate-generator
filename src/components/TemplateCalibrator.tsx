@@ -7,7 +7,6 @@ import {
   TemplateOrientation,
 } from '@/types';
 import { DEFAULT_TEMPLATE_LAYOUT, DEFAULT_PORTRAIT_LAYOUT } from '@/lib/default-layout';
-import { generateQrCodeDataUrl } from '@/lib/qr';
 import {
   Sliders,
   Move,
@@ -24,7 +23,6 @@ import {
   X,
   Layers,
   Sparkles,
-  QrCode,
   Shield,
   Award,
   Calendar,
@@ -53,8 +51,7 @@ type FieldKey =
   | 'championshipDate'
   | 'medalResult'
   | 'certificateNumber'
-  | 'issueDate'
-  | 'qrCode';
+  | 'issueDate';
 
 interface FieldMeta {
   key: FieldKey;
@@ -128,13 +125,6 @@ const FIELDS: FieldMeta[] = [
     icon: <Calendar className="w-3.5 h-3.5" />,
     defaultSample: 'October 25, 2026',
   },
-  {
-    key: 'qrCode',
-    label: 'Verification QR Code',
-    category: 'meta',
-    icon: <QrCode className="w-3.5 h-3.5" />,
-    defaultSample: 'https://kyorix.com/verify/05948321',
-  },
 ];
 
 const PRESET_COLORS = [
@@ -167,19 +157,11 @@ export const TemplateCalibrator: React.FC<TemplateCalibratorProps> = ({
   const [selectedField, setSelectedField] = useState<FieldKey>('athleteName');
   const [zoomScale, setZoomScale] = useState<number>(0.75);
   const [useSampleData, setUseSampleData] = useState<boolean>(true);
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
   const [saveToast, setSaveToast] = useState<boolean>(false);
 
   const canvasRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef<boolean>(false);
   const activeDragKeyRef = useRef<FieldKey | null>(null);
-
-  // Generate QR code sample
-  useEffect(() => {
-    generateQrCodeDataUrl('KYX-VERIFIED-SAMPLE-05948321').then(url => {
-      setQrCodeDataUrl(url);
-    });
-  }, []);
 
   // When switching template, load its specific saved layout
   const handleSelectTemplate = (template: CertificateTemplate) => {
@@ -318,7 +300,7 @@ export const TemplateCalibrator: React.FC<TemplateCalibratorProps> = ({
             <div className="flex items-center gap-2">
               <h2 className="text-base font-bold text-white">Visual Template Calibrator</h2>
               <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Phase 2
+                Precision Editor
               </span>
             </div>
             <p className="text-xs text-slate-400">
@@ -525,38 +507,20 @@ export const TemplateCalibrator: React.FC<TemplateCalibratorProps> = ({
                     </div>
                   )}
 
-                  {/* QR Code Special Element */}
-                  {key === 'qrCode' ? (
-                    <div
-                      style={{
-                        width: `${field.fontSizePx}px`,
-                        height: `${field.fontSizePx}px`,
-                      }}
-                      className="bg-white p-1 rounded border border-slate-300 shadow-sm flex items-center justify-center pointer-events-none"
-                    >
-                      {qrCodeDataUrl ? (
-                        <img
-                          src={qrCodeDataUrl}
-                          alt="Verification QR"
-                          className="w-full h-full object-contain pointer-events-none"
-                        />
-                      ) : (
-                        <QrCode className="w-full h-full text-slate-900" />
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        fontSize: `${field.fontSizePx}px`,
-                        color: field.color,
-                        textAlign: field.textAlign,
-                        fontWeight: field.isBold ? 700 : 400,
-                      }}
-                      className={`${fontClass} whitespace-nowrap leading-tight pointer-events-none`}
-                    >
-                      {fullText}
-                    </div>
-                  )}
+                  <div
+                    style={{
+                      fontSize: `${field.fontSizePx}px`,
+                      color: field.color,
+                      textAlign: field.textAlign,
+                      fontWeight: field.isBold ? 700 : 400,
+                      maxWidth: '88%',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    className={`${fontClass} whitespace-nowrap leading-tight pointer-events-none`}
+                  >
+                    {fullText}
+                  </div>
                 </div>
               );
             })}
@@ -715,8 +679,7 @@ export const TemplateCalibrator: React.FC<TemplateCalibratorProps> = ({
             </div>
 
             {/* Typography & Appearance Controls */}
-            {selectedField !== 'qrCode' && (
-              <div className="space-y-4 bg-[#0F1A3A] p-4 rounded-xl border border-[#1E2C52]">
+            <div className="space-y-4 bg-[#0F1A3A] p-4 rounded-xl border border-[#1E2C52]">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
                   <Type className="w-3.5 h-3.5" />
                   Typography & Appearance
@@ -872,7 +835,6 @@ export const TemplateCalibrator: React.FC<TemplateCalibratorProps> = ({
                   />
                 </div>
               </div>
-            )}
           </div>
 
           {/* Bottom Save Action */}

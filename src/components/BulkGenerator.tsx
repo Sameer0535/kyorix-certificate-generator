@@ -62,6 +62,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [isCancelled, setIsCancelled] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [totalToGenerate, setTotalToGenerate] = useState<number>(0);
   const [currentAthleteName, setCurrentAthleteName] = useState<string>('');
   const [zipSuccessToast, setZipSuccessToast] = useState<boolean>(false);
 
@@ -79,8 +80,14 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
   const duplicateCount = rows.filter(r => r.isDuplicateKukkiwonId).length;
   const completedCount = rows.filter(r => r.generationStatus === 'success').length;
   const failedCount = rows.filter(r => r.generationStatus === 'failed').length;
+  const selectedValidCount = rows.filter(r => r.isValid && r.selectedForDownload).length;
 
-  const progressPercent = totalCount > 0 ? Math.round((completedCount / (validCount || 1)) * 100) : 0;
+  const progressPercent =
+    totalToGenerate > 0
+      ? Math.min(100, Math.round((currentIndex / totalToGenerate) * 100))
+      : validCount > 0
+      ? Math.min(100, Math.round((completedCount / validCount) * 100))
+      : 0;
 
   // Handle file selection
   const handleFileChange = async (file: File) => {
@@ -204,26 +211,35 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
   };
 
   // Bulk Generation Execution
-  const handleStartBulkGeneration = async () => {
-    const validRows = rows.filter(r => r.isValid);
-    if (validRows.length === 0) {
-      alert('No valid athlete records to generate certificates for.');
+  const handleStartBulkGeneration = async (onlySelected: boolean = false) => {
+    const targetRows = rows.filter(r => r.isValid && (!onlySelected || r.selectedForDownload));
+    if (targetRows.length === 0) {
+      alert(
+        onlySelected
+          ? 'No valid selected athlete records to generate.'
+          : 'No valid athlete records to generate certificates for.'
+      );
       return;
     }
 
     setIsGenerating(true);
     setIsCancelled(false);
     isCancelledRef.current = false;
+    setTotalToGenerate(targetRows.length);
+    setCurrentIndex(0);
 
     const generatedHistoryRecords: GeneratedCertificateRecord[] = [];
+    let processedCount = 0;
 
     for (let i = 0; i < rows.length; i++) {
       if (isCancelledRef.current) break;
 
       const currentRow = rows[i];
       if (!currentRow.isValid) continue;
+      if (onlySelected && !currentRow.selectedForDownload) continue;
 
-      setCurrentIndex(i + 1);
+      processedCount++;
+      setCurrentIndex(processedCount);
       setCurrentAthleteName(currentRow.athleteName);
 
       // Update row status to processing
@@ -436,7 +452,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
               </span>
               <h2 className="text-xl font-bold">Bulk Certificate Generation & Excel Import</h2>
               <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Phase 3 Engine
+                Production Engine
               </span>
             </div>
             <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
@@ -548,7 +564,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-2">
                     <div className="w-3.5 h-3.5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
-                    Generating Certificate {currentIndex} of {validCount}...
+                    Generating Certificate {currentIndex} of {totalToGenerate || validCount}...
                   </span>
                   <p className="text-xs text-slate-600 font-medium">
                     Athlete: <span className="font-bold text-slate-900">{currentAthleteName}</span>
@@ -630,19 +646,32 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
 
             {/* Action Buttons: Generate & ZIP Download */}
             <div className="flex items-center gap-2.5">
-              {/* Primary Batch Generate Button */}
+              {/* Primary Batch Generate All Button */}
               <button
-                onClick={handleStartBulkGeneration}
+                onClick={() => handleStartBulkGeneration(false)}
                 disabled={isGenerating || validCount === 0}
                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center gap-2 transition active:scale-95 disabled:opacity-50"
               >
                 <Play className="w-4 h-4 fill-slate-950" />
                 <span>
                   {completedCount > 0
-                    ? `Re-Generate Batch (${validCount})`
+                    ? `Re-Generate All Valid (${validCount})`
                     : `Generate All Valid (${validCount})`}
                 </span>
               </button>
+
+              {/* Generate Selected Valid Button */}
+              {selectedValidCount > 0 && selectedValidCount < validCount && (
+                <button
+                  onClick={() => handleStartBulkGeneration(true)}
+                  disabled={isGenerating}
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs uppercase tracking-wider border border-amber-400/40 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
+                  title="Generate certificates only for checked valid rows"
+                >
+                  <Play className="w-3.5 h-3.5 fill-amber-400" />
+                  <span>Generate Selected ({selectedValidCount})</span>
+                </button>
+              )}
 
               {/* Download ZIP Button */}
               {completedCount > 0 && (

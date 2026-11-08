@@ -47,7 +47,6 @@ export interface TemplateLayoutConfig {
   medalResult: FieldPositionConfig;
   certificateNumber?: FieldPositionConfig;
   issueDate?: FieldPositionConfig;
-  qrCode?: FieldPositionConfig;
 }
 
 export interface CertificateTemplate {

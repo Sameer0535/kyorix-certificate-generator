@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { AthleteDetails, CertificateTemplate, CertificateType, FieldPositionConfig } from '@/types';
-import { Award, QrCode } from 'lucide-react';
-import { generateQrCodeDataUrl } from '@/lib/qr';
+import { Award } from 'lucide-react';
 
 interface CertificateRendererProps {
   athlete: AthleteDetails;
@@ -16,8 +15,6 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
   className = '',
   isExporting = false,
 }) => {
-  const [qrDataUrl, setQrDataUrl] = useState<string>('');
-
   const certNumber = athlete.certificateNumber || 'KYX-2026-CERT';
   const isPortrait = template?.orientation === 'portrait';
   const canvasWidth = isPortrait ? 742 : 1050;
@@ -29,14 +26,6 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
 
   const useCustomLayout = template?.layoutConfig && template.layoutConfig.useCustomLayout;
   const layout = template?.layoutConfig;
-
-  // Generate QR code for verification
-  useEffect(() => {
-    const qrPayload = `KYORIX-VERIFIED:${certNumber}:${athlete.kukkiwonId}:${athlete.athleteName}:${athlete.certificateType}`;
-    generateQrCodeDataUrl(qrPayload).then(url => {
-      setQrDataUrl(url);
-    });
-  }, [certNumber, athlete.kukkiwonId, athlete.athleteName, athlete.certificateType]);
 
   const issueDateFormatted = athlete.issueDate
     ? new Date(athlete.issueDate).toLocaleDateString('en-US', {
@@ -156,6 +145,9 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
           color: field.color,
           textAlign: field.textAlign,
           fontWeight: field.isBold ? 700 : 400,
+          maxWidth: '88%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
           zIndex: 20,
         }}
         className={`${fontClass} leading-tight select-none pointer-events-none whitespace-nowrap`}
@@ -237,32 +229,6 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
           {/* 9. Issue Date */}
           {layout.issueDate &&
             renderCalibratedField(layout.issueDate, issueDateFormatted, 'issueDate')}
-
-          {/* Verification QR Code */}
-          {layout.qrCode && layout.qrCode.visible && (
-            <div
-              style={{
-                position: 'absolute',
-                left: `${layout.qrCode.xPercent}%`,
-                top: `${layout.qrCode.yPercent}%`,
-                transform: 'translate(-50%, -50%)',
-                width: `${layout.qrCode.fontSizePx}px`,
-                height: `${layout.qrCode.fontSizePx}px`,
-                zIndex: 20,
-              }}
-              className="bg-white p-1 rounded border border-slate-300 shadow-sm flex items-center justify-center pointer-events-none"
-            >
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="Verification QR"
-                  className="w-full h-full object-contain pointer-events-none"
-                />
-              ) : (
-                <QrCode className="w-full h-full text-slate-900" />
-              )}
-            </div>
-          )}
         </div>
       ) : (
         /* RENDER MODE B: Default Standard Kyorix Frame */

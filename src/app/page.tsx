@@ -100,6 +100,9 @@ export default function Home() {
     for (const rec of batchRecords) {
       currentHistory = [rec, ...currentHistory];
     }
+    if (currentHistory.length > 500) {
+      currentHistory = currentHistory.slice(0, 500);
+    }
     try {
       localStorage.setItem('kyorix_certificate_history_v1', JSON.stringify(currentHistory));
     } catch (e) {

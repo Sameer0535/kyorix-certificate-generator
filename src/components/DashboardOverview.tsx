@@ -51,7 +51,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Phase 3 — Bulk Generation & Excel Engine Active</span>
+              <span>Official Kyorix Certification Engine Active</span>
             </div>
             <h1 className="text-3xl font-extrabold text-white tracking-tight">
               Kyorix Certificate Generator
@@ -172,7 +172,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 Bulk Generation
               </h3>
               <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
-                Phase 3
+                Batch
               </span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed">

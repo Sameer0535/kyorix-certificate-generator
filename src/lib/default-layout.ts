@@ -100,16 +100,6 @@ export const DEFAULT_TEMPLATE_LAYOUT: TemplateLayoutConfig = {
     isBold: false,
     prefix: 'Issued: ',
   },
-  qrCode: {
-    visible: true,
-    xPercent: 50,
-    yPercent: 80,
-    fontSizePx: 64,
-    color: '#0A1128',
-    fontFamily: 'sans',
-    textAlign: 'center',
-    isBold: false,
-  },
 };
 
 export const DEFAULT_PORTRAIT_LAYOUT: TemplateLayoutConfig = {
@@ -211,15 +201,5 @@ export const DEFAULT_PORTRAIT_LAYOUT: TemplateLayoutConfig = {
     textAlign: 'right',
     isBold: false,
     prefix: 'Issued: ',
-  },
-  qrCode: {
-    visible: true,
-    xPercent: 50,
-    yPercent: 82,
-    fontSizePx: 60,
-    color: '#0A1128',
-    fontFamily: 'sans',
-    textAlign: 'center',
-    isBold: false,
   },
 };

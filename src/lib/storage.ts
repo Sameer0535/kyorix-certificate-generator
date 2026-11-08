@@ -185,7 +185,7 @@ export function getStoredHistory(): GeneratedCertificateRecord[] {
 export function addHistoryRecord(record: GeneratedCertificateRecord): GeneratedCertificateRecord[] {
   if (typeof window === 'undefined') return [];
   const current = getStoredHistory();
-  const updated = [record, ...current];
+  const updated = [record, ...current].slice(0, 500);
   try {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
   } catch (e) {

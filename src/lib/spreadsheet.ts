@@ -133,6 +133,11 @@ export function validateAthleteRow(
   // 6. Championship Date
   if (!row.championshipDate) {
     errors.push('Missing Championship Date.');
+  } else {
+    const parsedDate = new Date(row.championshipDate);
+    if (isNaN(parsedDate.getTime())) {
+      errors.push(`Invalid Championship Date format: '${row.championshipDate}'.`);
+    }
   }
 
   // 7. Certificate Type & Medal Result
@@ -160,12 +165,20 @@ export function validateAthleteRow(
  */
 export async function parseSpreadsheetFile(file: File): Promise<BulkAthleteRow[]> {
   const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+  const workbook = XLSX.read(buffer, {
+    type: 'array',
+    cellDates: true,
+    cellText: true,
+    raw: false,
+  });
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
 
-  // Raw JSON rows
-  const rawData: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+  // Raw JSON rows with raw: false to preserve formatted text and leading zeros
+  const rawData: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, {
+    defval: '',
+    raw: false,
+  });
 
   const rawRows: Omit<BulkAthleteRow, 'isValid' | 'errors' | 'warnings'>[] = rawData.map(
     (item, index) => {

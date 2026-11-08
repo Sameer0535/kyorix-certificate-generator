@@ -421,3 +421,4 @@ export const TEMPORARY_TEMPLATES: CertificateTemplate[] = [
     },
   },
 ];
+

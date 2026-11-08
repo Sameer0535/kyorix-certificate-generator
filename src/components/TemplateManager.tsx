@@ -331,7 +331,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
               </span>
               <h2 className="text-xl font-bold">Certificate Template Repository</h2>
               <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Phase 4 Ready
+                Active Repository
               </span>
             </div>
             <p className="text-xs text-slate-300 mt-1 max-w-xl">

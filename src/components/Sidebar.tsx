@@ -49,7 +49,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Bulk Generation',
       subtext: 'Excel / CSV & ZIP Export',
       icon: <FileSpreadsheet className="w-4 h-4" />,
-      badge: 'Phase 3',
     },
     {
       id: 'templates',
@@ -87,9 +86,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <KyorixLogo size="md" />
             <div className="mt-3 flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider uppercase text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
-                Phase 3 Enterprise
+                Kyorix Engine
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">v1.2.0</span>
+              <span className="text-[10px] text-slate-400 font-mono">v1.4.0</span>
             </div>
           </div>
 
