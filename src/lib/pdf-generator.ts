@@ -26,8 +26,13 @@ export async function exportCertificateToPdf(
       allowTaint: true,
       logging: false,
       backgroundColor: '#ffffff',
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
+      onclone: (_clonedDoc, clonedElement) => {
+        clonedElement.style.transform = 'none';
+        clonedElement.style.margin = '0';
+        if (clonedElement.parentElement) {
+          clonedElement.parentElement.style.transform = 'none';
+        }
+      },
     });
 
     const imgData = canvas.toDataURL('image/jpeg', quality);
@@ -72,8 +77,13 @@ export async function generateCertificatePdfBlob(
       allowTaint: true,
       logging: false,
       backgroundColor: '#ffffff',
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
+      onclone: (_clonedDoc, clonedElement) => {
+        clonedElement.style.transform = 'none';
+        clonedElement.style.margin = '0';
+        if (clonedElement.parentElement) {
+          clonedElement.parentElement.style.transform = 'none';
+        }
+      },
     });
 
     const imgData = canvas.toDataURL('image/jpeg', quality);

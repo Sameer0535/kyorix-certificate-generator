@@ -142,13 +142,11 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
               ? 'translate(-100%, -50%)'
               : 'translate(-50%, -50%)',
           fontSize: `${field.fontSizePx}px`,
-          color: field.color,
+          color: field.color || '#0F172A',
           textAlign: field.textAlign,
           fontWeight: field.isBold ? 700 : 400,
-          maxWidth: '88%',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          zIndex: 20,
+          maxWidth: '90%',
+          zIndex: 30,
         }}
         className={`${fontClass} leading-tight select-none pointer-events-none whitespace-nowrap`}
       >
@@ -164,12 +162,13 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
       style={{
         width: `${canvasWidth}px`,
         height: `${canvasHeight}px`,
+        position: 'relative',
         fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       }}
     >
       {/* Background layer: Render template SVG/PNG/JPG/PDF image */}
       {backgroundImage ? (
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <img
             src={backgroundImage}
             alt="Certificate Template Backdrop"
@@ -194,7 +193,10 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
 
       {/* RENDER MODE A: Custom Calibrated Layout Mode */}
       {useCustomLayout && layout ? (
-        <div className="relative z-10 w-full h-full">
+        <div
+          className="absolute inset-0 z-20 pointer-events-none"
+          style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
+        >
           {/* 1. Athlete Name */}
           {renderCalibratedField(layout.athleteName, athlete.athleteName, 'athleteName')}
 
@@ -232,7 +234,10 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
         </div>
       ) : (
         /* RENDER MODE B: Default Standard Kyorix Frame */
-        <div className="relative z-10 w-full h-full p-12 flex flex-col justify-between">
+        <div
+          className="absolute inset-0 z-20 w-full h-full p-12 flex flex-col justify-between pointer-events-none"
+          style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
+        >
           <div className="text-center pt-2">
             <div className="flex items-center justify-between px-8 mb-3">
               <div className="flex items-center gap-3 text-left">
