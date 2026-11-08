@@ -119,9 +119,9 @@ export const CertificatePreview: React.FC<CertificatePreviewProps> = ({
           {template && onOpenCalibrator && (
             <button
               onClick={() => onOpenCalibrator(template)}
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center gap-1.5 transition shadow-sm border border-slate-800"
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold text-xs flex items-center gap-1.5 transition shadow-sm border border-slate-700"
             >
-              <Sliders className="w-3.5 h-3.5" />
+              <Sliders className="w-3.5 h-3.5 text-cyan-400" />
               <span>Calibrate Text Layout</span>
             </button>
           )}
@@ -166,16 +166,16 @@ export const CertificatePreview: React.FC<CertificatePreviewProps> = ({
           <button
             onClick={handleDownloadPdf}
             disabled={isExporting}
-            className="px-6 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 flex items-center gap-2 active:scale-95 transition disabled:opacity-60"
+            className="px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/25 flex items-center gap-2 active:scale-95 transition disabled:opacity-60"
           >
             {isExporting ? (
               <>
-                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 <span>Generating {isPortrait ? 'Portrait' : 'Landscape'} PDF...</span>
               </>
             ) : downloadSuccess ? (
               <>
-                <CheckCircle className="w-4 h-4 text-emerald-950" />
+                <CheckCircle className="w-4 h-4 text-white" />
                 <span>PDF Downloaded!</span>
               </>
             ) : (
@@ -190,10 +190,10 @@ export const CertificatePreview: React.FC<CertificatePreviewProps> = ({
 
       {/* Template switcher banner if multiple matching templates exist */}
       {availableTemplates.length > 1 && onSelectTemplate && (
-        <div className="bg-slate-900/90 text-white rounded-xl p-3 px-4 border border-slate-800 flex items-center justify-between gap-4">
+        <div className="bg-white text-slate-800 rounded-xl p-3 px-4 border border-slate-200 shadow-sm flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-xs">
-            <Layers className="w-4 h-4 text-amber-400" />
-            <span className="text-slate-300">Switch applied template for preview:</span>
+            <Layers className="w-4 h-4 text-cyan-600" />
+            <span className="text-slate-600 font-medium">Switch applied template for preview:</span>
           </div>
           <div className="flex items-center gap-2 overflow-x-auto">
             {availableTemplates.map(t => {
@@ -204,8 +204,8 @@ export const CertificatePreview: React.FC<CertificatePreviewProps> = ({
                   onClick={() => onSelectTemplate(t)}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
                     isActive
-                      ? 'bg-amber-400 text-slate-950 font-bold shadow'
-                      : 'bg-white/10 text-slate-300 hover:bg-white/20'
+                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-sm'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   {t.name} ({t.orientation || 'landscape'})
@@ -217,7 +217,7 @@ export const CertificatePreview: React.FC<CertificatePreviewProps> = ({
       )}
 
       {/* Main Preview Canvas Area */}
-      <div className="bg-slate-950 rounded-2xl p-6 md:p-10 border border-slate-800 shadow-2xl flex items-center justify-center overflow-auto min-h-[580px]">
+      <div className="bg-slate-100 rounded-2xl p-6 md:p-10 border border-slate-200 shadow-inner flex items-center justify-center overflow-auto min-h-[580px]">
         <div
           ref={certContainerRef}
           style={{

@@ -1,5 +1,6 @@
 import { CertificateTemplate, TemplateLayoutConfig } from '@/types';
 import { DEFAULT_TEMPLATE_LAYOUT } from './default-layout';
+import { KYORIX_LOGO_DATA_URI } from './logo-data';
 
 /**
  * Creates SVG Data URLs for the 4 Temporary Certificate Templates
@@ -58,10 +59,9 @@ export const GOLD_TEMPLATE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBo
     <text text-anchor="middle" y="25" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" fill="#0A1128" letter-spacing="12">KYORIX</text>
   </g>
 
-  <!-- Top Logo & Organization Placeholder Space -->
-  <g transform="translate(525, 78)">
-    <rect x="-85" y="-18" width="170" height="34" rx="6" fill="#0A1128" stroke="#D4AF37" stroke-width="1.5"/>
-    <text text-anchor="middle" y="4" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="11" fill="#FFFFFF" letter-spacing="2">KYORIX SPORTS TECH</text>
+  <!-- Top Official Kyorix Logo -->
+  <g transform="translate(525, 76)">
+    <image href="${KYORIX_LOGO_DATA_URI}" x="-115" y="-23" width="230" height="46" preserveAspectRatio="xMidYMid meet"/>
   </g>
 
   <!-- Gold Laurel & Medal Header Badge -->
@@ -139,10 +139,9 @@ export const SILVER_TEMPLATE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" view
     <text text-anchor="middle" y="25" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" fill="#0A1128" letter-spacing="12">KYORIX</text>
   </g>
 
-  <!-- Top Logo Placeholder Space -->
-  <g transform="translate(525, 78)">
-    <rect x="-85" y="-18" width="170" height="34" rx="6" fill="#0A1128" stroke="#94A3B8" stroke-width="1.5"/>
-    <text text-anchor="middle" y="4" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="11" fill="#FFFFFF" letter-spacing="2">KYORIX SPORTS TECH</text>
+  <!-- Top Official Kyorix Logo -->
+  <g transform="translate(525, 76)">
+    <image href="${KYORIX_LOGO_DATA_URI}" x="-115" y="-23" width="230" height="46" preserveAspectRatio="xMidYMid meet"/>
   </g>
 
   <!-- Silver Laurel & Medal Header Badge -->
@@ -215,10 +214,9 @@ export const BRONZE_TEMPLATE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" view
     <text text-anchor="middle" y="25" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" fill="#0A1128" letter-spacing="12">KYORIX</text>
   </g>
 
-  <!-- Top Logo Placeholder Space -->
-  <g transform="translate(525, 78)">
-    <rect x="-85" y="-18" width="170" height="34" rx="6" fill="#0A1128" stroke="#B45309" stroke-width="1.5"/>
-    <text text-anchor="middle" y="4" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="11" fill="#FFFFFF" letter-spacing="2">KYORIX SPORTS TECH</text>
+  <!-- Top Official Kyorix Logo -->
+  <g transform="translate(525, 76)">
+    <image href="${KYORIX_LOGO_DATA_URI}" x="-115" y="-23" width="230" height="46" preserveAspectRatio="xMidYMid meet"/>
   </g>
 
   <!-- Bronze Laurel & Medal Header Badge -->
@@ -292,10 +290,9 @@ export const PARTICIPATION_TEMPLATE_SVG = `<svg xmlns="http://www.w3.org/2000/sv
     <text text-anchor="middle" y="25" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" fill="#0A1128" letter-spacing="12">KYORIX</text>
   </g>
 
-  <!-- Top Logo Placeholder Space -->
-  <g transform="translate(525, 78)">
-    <rect x="-85" y="-18" width="170" height="34" rx="6" fill="#0A1128" stroke="#D4AF37" stroke-width="1.5"/>
-    <text text-anchor="middle" y="4" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="11" fill="#FFFFFF" letter-spacing="2">KYORIX SPORTS TECH</text>
+  <!-- Top Official Kyorix Logo -->
+  <g transform="translate(525, 76)">
+    <image href="${KYORIX_LOGO_DATA_URI}" x="-115" y="-23" width="230" height="46" preserveAspectRatio="xMidYMid meet"/>
   </g>
 
   <!-- Official Participation Shield Badge (NO MEDAL) -->

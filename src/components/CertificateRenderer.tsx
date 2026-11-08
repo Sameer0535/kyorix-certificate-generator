@@ -179,15 +179,15 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
       ) : (
         /* Default Official Kyorix Vector Frame */
         <div className="absolute inset-0 z-0 bg-[#FCFDFE]">
-          <div className="absolute inset-4 border-[5px] border-[#0A1128] pointer-events-none" />
-          <div className="absolute inset-6 border-[2px] border-[#D4AF37] pointer-events-none" />
-          <div className="absolute inset-8 border border-dashed border-[#D4AF37]/50 pointer-events-none" />
-          <div className="absolute top-6 left-6 w-14 h-14 border-t-4 border-l-4 border-[#D4AF37] pointer-events-none" />
-          <div className="absolute top-6 right-6 w-14 h-14 border-t-4 border-r-4 border-[#D4AF37] pointer-events-none" />
-          <div className="absolute bottom-6 left-6 w-14 h-14 border-b-4 border-l-4 border-[#D4AF37] pointer-events-none" />
-          <div className="absolute bottom-6 right-6 w-14 h-14 border-b-4 border-r-4 border-[#D4AF37] pointer-events-none" />
+          <div className="absolute inset-4 border-[5px] border-[#0F172A] pointer-events-none" />
+          <div className="absolute inset-6 border-[2px] border-cyan-600 pointer-events-none" />
+          <div className="absolute inset-8 border border-dashed border-cyan-500/40 pointer-events-none" />
+          <div className="absolute top-6 left-6 w-14 h-14 border-t-4 border-l-4 border-cyan-600 pointer-events-none" />
+          <div className="absolute top-6 right-6 w-14 h-14 border-t-4 border-r-4 border-cyan-600 pointer-events-none" />
+          <div className="absolute bottom-6 left-6 w-14 h-14 border-b-4 border-l-4 border-cyan-600 pointer-events-none" />
+          <div className="absolute bottom-6 right-6 w-14 h-14 border-b-4 border-r-4 border-cyan-600 pointer-events-none" />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035]">
-            <span className="text-[120px] font-black tracking-widest text-[#0A1128]">KYORIX</span>
+            <span className="text-[120px] font-black tracking-widest text-[#0F172A]">KYORIX</span>
           </div>
         </div>
       )}
@@ -235,23 +235,17 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
         <div className="relative z-10 w-full h-full p-12 flex flex-col justify-between">
           <div className="text-center pt-2">
             <div className="flex items-center justify-between px-8 mb-3">
-              <div className="flex items-center gap-2 text-left">
-                <div className="w-9 h-9 rounded bg-[#0A1128] border border-[#D4AF37] flex items-center justify-center shadow">
-                  <span className="text-xs font-black text-[#D4AF37]">KX</span>
-                </div>
-                <div>
-                  <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0A1128]">
-                    Kyorix Sports Technology
-                  </p>
-                  <p className="text-[9px] uppercase tracking-wider text-slate-500">
-                    Official Taekwondo Certification System
-                  </p>
-                </div>
+              <div className="flex items-center gap-3 text-left">
+                <img
+                  src="/images/kyorix-logo.png"
+                  alt="Kyorix Sport Technology"
+                  className="h-10 w-auto object-contain"
+                />
               </div>
 
               {!isParticipation && (
                 <div
-                  className={`px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase shadow-sm border border-amber-400/40 bg-gradient-to-r ${config.medalBg} text-slate-900`}
+                  className={`px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase shadow-sm border border-cyan-400/40 bg-gradient-to-r ${config.medalBg} text-slate-900`}
                 >
                   {config.badge}
                 </div>
@@ -261,19 +255,19 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                 <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
                   Kukkiwon Verified ID
                 </p>
-                <p className="text-xs font-mono font-black text-[#0A1128] tracking-wider">
+                <p className="text-xs font-mono font-black text-[#0F172A] tracking-wider">
                   {athlete.kukkiwonId || 'PENDING ID'}
                 </p>
               </div>
             </div>
 
-            <h1 className="text-3xl font-black uppercase tracking-[0.25em] text-[#0A1128] font-serif mt-1">
+            <h1 className="text-3xl font-black uppercase tracking-[0.25em] text-[#0F172A] font-serif mt-1">
               {config.title}
             </h1>
             <div className="flex items-center justify-center gap-3 my-1">
-              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
-              <div className="w-2 h-2 rotate-45 bg-[#D4AF37]" />
-              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+              <div className="w-2 h-2 rotate-45 bg-cyan-500" />
+              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
             </div>
             <p className="text-[12px] uppercase tracking-widest font-medium text-slate-600">
               This is proudly presented to
@@ -282,14 +276,14 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
 
           {/* Athlete Name */}
           <div className="text-center my-1">
-            <div className="inline-block max-w-[850px] px-8 py-1.5 border-b-2 border-[#D4AF37]">
-              <h2 className="text-4xl font-extrabold tracking-wide text-[#0A1128] capitalize font-serif">
+            <div className="inline-block max-w-[850px] px-8 py-1.5 border-b-2 border-cyan-600">
+              <h2 className="text-4xl font-extrabold tracking-wide text-[#0F172A] capitalize font-serif">
                 {athlete.athleteName || 'Athlete Name'}
               </h2>
             </div>
             <p className="text-xs font-semibold text-slate-600 mt-2 tracking-wide">
               Representing{' '}
-              <span className="font-bold text-[#0A1128] uppercase">
+              <span className="font-bold text-[#0F172A] uppercase">
                 {athlete.academyName || 'Sports Academy'}
               </span>
             </p>
@@ -298,7 +292,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
           {/* Details */}
           <div className="max-w-[780px] mx-auto text-center px-6">
             <p className="text-[13px] leading-relaxed text-slate-700">{config.awardPhrase}</p>
-            <p className="text-lg font-black uppercase tracking-wide text-[#0A1128] mt-1">
+            <p className="text-lg font-black uppercase tracking-wide text-[#0F172A] mt-1">
               {athlete.championshipName || 'Official Taekwondo Championship'}
             </p>
 
@@ -307,7 +301,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Weight Category
                 </span>
-                <span className="text-xs font-extrabold text-[#0A1128]">
+                <span className="text-xs font-extrabold text-[#0F172A]">
                   {athlete.weightCategory || 'Open Division'}
                 </span>
               </div>
@@ -315,7 +309,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                 <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Championship Date
                 </span>
-                <span className="text-xs font-extrabold text-[#0A1128]">
+                <span className="text-xs font-extrabold text-[#0F172A]">
                   {championshipDateFormatted}
                 </span>
               </div>
@@ -330,20 +324,20 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                   Master K. S. Park
                 </div>
                 <div className="w-44 border-t border-slate-400 mt-1" />
-                <p className="text-[11px] font-bold uppercase text-[#0A1128] mt-1">
+                <p className="text-[11px] font-bold uppercase text-[#0F172A] mt-1">
                   Tournament Director
                 </p>
                 <p className="text-[9px] text-slate-500">Kyorix Championship Committee</p>
               </div>
 
               <div className="flex flex-col items-center justify-center">
-                <div className="w-20 h-20 rounded-full border-4 border-[#D4AF37] bg-gradient-to-br from-amber-100 via-amber-200 to-yellow-50 flex flex-col items-center justify-center shadow-md p-1">
-                  <div className="w-full h-full rounded-full border border-dashed border-[#D4AF37] flex flex-col items-center justify-center text-center">
-                    <Award className="w-5 h-5 text-amber-600 mb-0.5" />
-                    <span className="text-[7px] font-black uppercase tracking-tighter text-[#0A1128]">
+                <div className="w-20 h-20 rounded-full border-4 border-cyan-600 bg-gradient-to-br from-cyan-50 via-sky-100 to-blue-50 flex flex-col items-center justify-center shadow-md p-1">
+                  <div className="w-full h-full rounded-full border border-dashed border-cyan-500 flex flex-col items-center justify-center text-center">
+                    <Award className="w-5 h-5 text-cyan-600 mb-0.5" />
+                    <span className="text-[7px] font-black uppercase tracking-tighter text-[#0F172A]">
                       KYORIX VERIFIED
                     </span>
-                    <span className="text-[6px] font-bold text-amber-700">SPORTS TECH</span>
+                    <span className="text-[6px] font-bold text-cyan-700">SPORTS TECH</span>
                   </div>
                 </div>
                 <span className="text-[9px] font-mono text-slate-400 mt-1.5 font-bold">
@@ -356,7 +350,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                   Dr. H. J. Lee
                 </div>
                 <div className="w-44 border-t border-slate-400 mt-1" />
-                <p className="text-[11px] font-bold uppercase text-[#0A1128] mt-1">
+                <p className="text-[11px] font-bold uppercase text-[#0F172A] mt-1">
                   Head of Scrutiny & Referee
                 </p>
                 <p className="text-[9px] text-slate-500">World Kukkiwon Official Panel</p>

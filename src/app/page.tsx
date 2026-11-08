@@ -184,7 +184,7 @@ export default function Home() {
     : templates;
 
   return (
-    <div className="min-h-screen bg-[#0A1128] flex text-slate-100">
+    <div className="min-h-screen bg-[#F8FAFC] flex text-slate-900">
       {/* Sidebar Navigation */}
       <Sidebar
         currentTab={currentTab}
@@ -213,8 +213,8 @@ export default function Home() {
           {!isClientLoaded ? (
             <div className="h-96 flex items-center justify-center">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs font-mono text-amber-400">Loading Kyorix Engine...</p>
+                <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-xs font-mono text-cyan-600 font-bold">Loading Kyorix Engine...</p>
               </div>
             </div>
           ) : (

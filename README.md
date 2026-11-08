@@ -130,3 +130,4 @@ kyorix-certificate-generator/
 ## License & Intellectual Property
 
 Copyright © 2026 Kyorix Sports Technology. All rights reserved.
+

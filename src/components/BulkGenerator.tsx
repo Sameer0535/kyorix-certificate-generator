@@ -444,18 +444,18 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
 
       {/* Header Banner */}
       <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-        <div className="p-6 md:p-8 bg-gradient-to-r from-slate-900 via-[#0A1128] to-slate-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="p-6 md:p-8 bg-white text-slate-900 border-b border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400">
+              <span className="p-2 rounded-lg bg-cyan-50 border border-cyan-200 text-cyan-600">
                 <FileSpreadsheet className="w-5 h-5" />
               </span>
-              <h2 className="text-xl font-bold">Bulk Certificate Generation & Excel Import</h2>
-              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <h2 className="text-xl font-extrabold text-slate-900">Bulk Certificate Generation & Excel Import</h2>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold">
                 Production Engine
               </span>
             </div>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
               Upload competition rosters in Excel (.xlsx, .xls) or CSV. The system automatically
               validates Kukkiwon records, pairs them with calibrated templates, and outputs
               individual PDFs and bundled ZIP packages.
@@ -465,23 +465,23 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={downloadSampleExcelTemplate}
-              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/20 flex items-center gap-1.5 transition"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 flex items-center gap-1.5 transition"
               title="Download standard Excel template with proper column headers"
             >
-              <Download className="w-3.5 h-3.5 text-emerald-400" />
+              <Download className="w-3.5 h-3.5 text-emerald-600" />
               <span>Sample Excel (.xlsx)</span>
             </button>
             <button
               onClick={downloadSampleCsvTemplate}
-              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/20 flex items-center gap-1.5 transition"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 flex items-center gap-1.5 transition"
               title="Download standard CSV template"
             >
-              <Download className="w-3.5 h-3.5 text-blue-400" />
+              <Download className="w-3.5 h-3.5 text-blue-600" />
               <span>Sample CSV</span>
             </button>
             <button
               onClick={handleLoadDemoData}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center gap-1.5 transition"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/25 flex items-center gap-1.5 transition"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Load Demo Roster</span>
@@ -493,9 +493,9 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
         <div className="p-6 bg-slate-50/60 border-b border-slate-200">
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-xl p-8 text-center cursor-pointer transition-all bg-white hover:bg-amber-50/20 group"
+            className="border-2 border-dashed border-slate-300 hover:border-cyan-500 rounded-xl p-8 text-center cursor-pointer transition-all bg-white hover:bg-cyan-50/20 group"
           >
-            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 group-hover:bg-amber-100/70 text-slate-600 group-hover:text-amber-600 flex items-center justify-center mb-3 transition">
+            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 group-hover:bg-cyan-100 text-slate-600 group-hover:text-cyan-600 flex items-center justify-center mb-3 transition">
               <Upload className="w-6 h-6" />
             </div>
             <p className="text-sm font-bold text-slate-800">
@@ -559,11 +559,11 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
 
           {/* Active Generation Progress Bar */}
           {isGenerating && (
-            <div className="px-6 py-4 bg-amber-50/60 border-y border-amber-200/80 animate-in fade-in">
+            <div className="px-6 py-4 bg-cyan-50/60 border-y border-cyan-200/80 animate-in fade-in">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                    <div className="w-3.5 h-3.5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-cyan-950 flex items-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
                     Generating Certificate {currentIndex} of {totalToGenerate || validCount}...
                   </span>
                   <p className="text-xs text-slate-600 font-medium">
@@ -571,7 +571,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono font-bold text-amber-900">
+                  <span className="text-xs font-mono font-bold text-cyan-900">
                     {progressPercent}% Complete
                   </span>
                   <button
@@ -585,7 +585,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
               <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
                 <div
                   style={{ width: `${progressPercent}%` }}
-                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full transition-all duration-150"
+                  className="h-full bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 rounded-full transition-all duration-150"
                 />
               </div>
             </div>
@@ -650,9 +650,9 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
               <button
                 onClick={() => handleStartBulkGeneration(false)}
                 disabled={isGenerating || validCount === 0}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center gap-2 transition active:scale-95 disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition active:scale-95 disabled:opacity-50"
               >
-                <Play className="w-4 h-4 fill-slate-950" />
+                <Play className="w-4 h-4 fill-white" />
                 <span>
                   {completedCount > 0
                     ? `Re-Generate All Valid (${validCount})`
@@ -665,10 +665,10 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
                 <button
                   onClick={() => handleStartBulkGeneration(true)}
                   disabled={isGenerating}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs uppercase tracking-wider border border-amber-400/40 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 font-bold text-xs uppercase tracking-wider border border-slate-700 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
                   title="Generate certificates only for checked valid rows"
                 >
-                  <Play className="w-3.5 h-3.5 fill-amber-400" />
+                  <Play className="w-3.5 h-3.5 fill-cyan-400" />
                   <span>Generate Selected ({selectedValidCount})</span>
                 </button>
               )}
@@ -680,7 +680,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
                     onClick={handleDownloadZip}
                     className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5 transition"
                   >
-                    <Archive className="w-4 h-4 text-amber-400" />
+                    <Archive className="w-4 h-4 text-cyan-400" />
                     <span>Download All ZIP ({completedCount})</span>
                   </button>
 

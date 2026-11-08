@@ -323,18 +323,18 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
 
       {/* Header & Upload Banner */}
       <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-        <div className="p-6 md:p-8 bg-gradient-to-r from-slate-900 via-[#0A1128] to-slate-900 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="p-6 md:p-8 bg-white text-slate-900 border-b border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400">
+              <span className="p-2 rounded-lg bg-cyan-50 border border-cyan-200 text-cyan-600">
                 <Layers className="w-5 h-5" />
               </span>
-              <h2 className="text-xl font-bold">Certificate Template Repository</h2>
-              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <h2 className="text-xl font-extrabold text-slate-900">Certificate Template Repository</h2>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold">
                 Active Repository
               </span>
             </div>
-            <p className="text-xs text-slate-300 mt-1 max-w-xl">
+            <p className="text-xs text-slate-500 mt-1 max-w-xl">
               Temporary templates for Gold, Silver, Bronze, and Participation are active. You can
               rename, preview, calibrate positions, or replace any temporary template with your
               official design whenever ready.
@@ -343,7 +343,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs tracking-wider uppercase shadow-lg shadow-amber-500/20 flex items-center gap-2 transition"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs tracking-wider uppercase shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition"
           >
             <Upload className="w-4 h-4" />
             Upload Additional Template
@@ -356,9 +356,9 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-300 hover:border-amber-400 rounded-xl p-8 text-center cursor-pointer transition-all bg-white hover:bg-amber-50/20 group"
+            className="border-2 border-dashed border-slate-300 hover:border-cyan-500 rounded-xl p-8 text-center cursor-pointer transition-all bg-white hover:bg-cyan-50/20 group"
           >
-            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 group-hover:bg-amber-100/70 text-slate-600 group-hover:text-amber-600 flex items-center justify-center mb-3 transition">
+            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 group-hover:bg-cyan-100 text-slate-600 group-hover:text-cyan-600 flex items-center justify-center mb-3 transition">
               <Upload className="w-6 h-6" />
             </div>
             <p className="text-sm font-bold text-slate-800">

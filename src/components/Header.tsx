@@ -51,35 +51,35 @@ export const Header: React.FC<HeaderProps> = ({
   const info = getTabInfo();
 
   return (
-    <header className="sticky top-0 z-30 bg-[#060B18]/90 backdrop-blur-md border-b border-[#192545] px-6 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
         {/* Mobile menu trigger */}
         <button
           onClick={onOpenMobileSidebar}
-          className="md:hidden p-2 rounded-lg bg-[#0F1A3A] text-slate-300 hover:text-white border border-[#1E2C52]"
+          className="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 hover:text-slate-950 border border-slate-200 transition"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <div>
-          <h1 className="text-lg md:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <span>{info.title}</span>
           </h1>
-          <p className="text-xs text-slate-400 hidden sm:block">{info.subtitle}</p>
+          <p className="text-xs text-slate-500 hidden sm:block">{info.subtitle}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-slate-400 bg-[#0B132B] px-3 py-1.5 rounded-lg border border-[#1E2C52]">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>System Online</span>
         </div>
 
         {currentTab !== 'generate' && currentTab !== 'bulk' && (
           <button
             onClick={onQuickGenerate}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition active:scale-95"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-cyan-500/25 flex items-center gap-1.5 transition active:scale-95"
           >
             <Award className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">New Certificate</span>
