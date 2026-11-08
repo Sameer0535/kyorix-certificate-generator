@@ -75,12 +75,69 @@ npm test
 
 ### 4. Production Build
 
-To create an optimized production build:
+To create an optimized production static build:
 
 ```bash
 npm run build
-npm start
 ```
+
+---
+
+## Desktop Software Application & GitHub Deployment
+
+### 1. Pushing to GitHub
+
+To link this repository to your GitHub account:
+
+1. Create a new empty repository on [GitHub](https://github.com/new) (e.g. `kyorix-certificate-generator`). Do **not** initialize it with a README or `.gitignore`.
+2. Run these commands in PowerShell in this directory:
+
+```powershell
+git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/kyorix-certificate-generator.git
+git branch -M main
+git push -u origin main
+```
+
+*(Replace `<YOUR_GITHUB_USERNAME>` with your actual GitHub username).*
+
+---
+
+### 2. Automated Cloud Desktop App Build (GitHub Actions)
+
+This repository includes [`.github/workflows/build-desktop.yml`](.github/workflows/build-desktop.yml).
+As soon as you push your code to GitHub:
+- GitHub Actions automatically compiles the application on a Windows cloud runner.
+- Packages the standalone Windows installer (`.exe`) with the official Kyorix app icon.
+- Uploads the `.exe` artifact under the **Actions** tab on your GitHub repository for 1-click download!
+
+---
+
+### 3. Converting to Desktop Software Locally
+
+The project includes native Electron configuration with the official Kyorix 3D app icon (`assets/icon.png`).
+
+To package the `.exe` directly on your Windows computer:
+
+```powershell
+# 1. Install Electron and Builder
+npm install --save-dev electron electron-builder
+
+# 2. Build the Windows .exe installer
+npm run app:build
+```
+
+The resulting standalone executable will be generated in the `dist/` directory:
+- `dist/Kyorix Certificate Generator Setup.exe` (Full Windows installer with desktop and start menu shortcuts)
+- `dist/Kyorix Certificate Generator.exe` (Portable zero-install executable)
+
+---
+
+### 4. Instant 1-Click Desktop App (PWA)
+
+While running locally (`npm run dev`), you can install Kyorix Certificate Generator as a native standalone desktop app with zero build wait:
+- Open `http://localhost:3000` in Google Chrome or Microsoft Edge.
+- Click the **"Install app"** icon in the browser address bar (or menu > **"Install Kyorix Certificate Generator"**).
+- The application launches in its own dedicated, borderless desktop window with the official Kyorix icon on your Windows Taskbar and Start Menu.
 
 ---
 

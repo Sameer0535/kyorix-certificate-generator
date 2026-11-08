@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: 'Kyorix Certificate Generator | Sports Technology',
   description:
     'Professional Taekwondo Athlete Certificate Generation Platform by Kyorix Sports Technology.',
+  icons: {
+    icon: '/app-icon.png',
+    apple: '/app-icon.png',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

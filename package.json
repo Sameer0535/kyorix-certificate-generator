@@ -2,12 +2,43 @@
   "name": "kyorix-certificate-generator",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node scratch/qa_suite.js"
+    "test": "node scratch/qa_suite.js",
+    "app:start": "electron .",
+    "app:build": "next build && electron-builder --win",
+    "app:package": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.kyorix.certificategenerator",
+    "productName": "Kyorix Certificate Generator",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "public/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kyorix Certificate Generator"
+    }
   },
   "dependencies": {
     "@types/jszip": "^3.4.0",

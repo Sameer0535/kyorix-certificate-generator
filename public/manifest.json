@@ -1,0 +1,17 @@
+{
+  "name": "Kyorix Certificate Generator",
+  "short_name": "Kyorix Cert",
+  "description": "Professional Athlete Certificate Generator for Kyorix Sports Technology",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#00A3FF",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
