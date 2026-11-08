@@ -26,11 +26,20 @@ export async function exportCertificateToPdf(
       allowTaint: true,
       logging: false,
       backgroundColor: '#ffffff',
-      onclone: (_clonedDoc, clonedElement) => {
+      onclone: (clonedDoc, clonedElement) => {
+        // Reset transforms and margins on target element
         clonedElement.style.transform = 'none';
         clonedElement.style.margin = '0';
-        if (clonedElement.parentElement) {
-          clonedElement.parentElement.style.transform = 'none';
+        clonedElement.style.position = 'relative';
+        clonedElement.style.top = '0';
+        clonedElement.style.left = '0';
+
+        // Clear transforms and overflow restrictions on all parent containers up to body
+        let parent: HTMLElement | null = clonedElement.parentElement;
+        while (parent && parent !== clonedDoc.body) {
+          parent.style.transform = 'none';
+          parent.style.overflow = 'visible';
+          parent = parent.parentElement;
         }
       },
     });
@@ -77,11 +86,20 @@ export async function generateCertificatePdfBlob(
       allowTaint: true,
       logging: false,
       backgroundColor: '#ffffff',
-      onclone: (_clonedDoc, clonedElement) => {
+      onclone: (clonedDoc, clonedElement) => {
+        // Reset transforms and margins on target element
         clonedElement.style.transform = 'none';
         clonedElement.style.margin = '0';
-        if (clonedElement.parentElement) {
-          clonedElement.parentElement.style.transform = 'none';
+        clonedElement.style.position = 'relative';
+        clonedElement.style.top = '0';
+        clonedElement.style.left = '0';
+
+        // Clear transforms and overflow restrictions on all parent containers up to body
+        let parent: HTMLElement | null = clonedElement.parentElement;
+        while (parent && parent !== clonedDoc.body) {
+          parent.style.transform = 'none';
+          parent.style.overflow = 'visible';
+          parent = parent.parentElement;
         }
       },
     });

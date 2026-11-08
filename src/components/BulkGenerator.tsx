@@ -272,7 +272,8 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
         // Wait for React to paint the DOM element
         await new Promise(r => setTimeout(r, 60));
 
-        const certElement = document.getElementById('kyorix-bulk-render-node');
+        const container = document.getElementById('kyorix-bulk-render-node');
+        const certElement = (container?.querySelector('#kyorix-printable-certificate') as HTMLElement) || container;
         if (!certElement) {
           throw new Error('Offscreen certificate node not found.');
         }
@@ -436,7 +437,7 @@ export const BulkGenerator: React.FC<BulkGeneratorProps> = ({
         }}
       >
         {renderingAthlete && (
-          <div id="kyorix-bulk-render-node">
+          <div id="kyorix-bulk-render-node" style={{ width: 1050, height: 742, position: 'relative' }}>
             <CertificateRenderer athlete={renderingAthlete} template={renderingTemplate} />
           </div>
         )}

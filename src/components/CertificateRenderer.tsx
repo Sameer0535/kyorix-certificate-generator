@@ -1,5 +1,6 @@
 import React from 'react';
-import { AthleteDetails, CertificateTemplate, CertificateType, FieldPositionConfig } from '@/types';
+import { AthleteDetails, CertificateTemplate, CertificateType, FieldPositionConfig, TemplateLayoutConfig } from '@/types';
+import { DEFAULT_TEMPLATE_LAYOUT, DEFAULT_PORTRAIT_LAYOUT } from '@/lib/default-layout';
 import { Award } from 'lucide-react';
 
 interface CertificateRendererProps {
@@ -24,8 +25,23 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
   const backgroundImage =
     template?.previewImageUrl || (template?.dataUrl ? template.dataUrl : null);
 
-  const useCustomLayout = template?.layoutConfig && template.layoutConfig.useCustomLayout;
-  const layout = template?.layoutConfig;
+  const baseDefaultLayout = isPortrait ? DEFAULT_PORTRAIT_LAYOUT : DEFAULT_TEMPLATE_LAYOUT;
+  const useCustomLayout = template?.layoutConfig ? template.layoutConfig.useCustomLayout !== false : !!backgroundImage;
+
+  // Resilient layout merge ensuring all fields have valid coordinates and styling
+  const layout: TemplateLayoutConfig = {
+    ...baseDefaultLayout,
+    ...(template?.layoutConfig || {}),
+    athleteName: { ...baseDefaultLayout.athleteName, ...(template?.layoutConfig?.athleteName || {}) },
+    academyName: { ...baseDefaultLayout.academyName, ...(template?.layoutConfig?.academyName || {}) },
+    medalResult: { ...baseDefaultLayout.medalResult, ...(template?.layoutConfig?.medalResult || {}) },
+    championshipName: { ...baseDefaultLayout.championshipName, ...(template?.layoutConfig?.championshipName || {}) },
+    weightCategory: { ...baseDefaultLayout.weightCategory, ...(template?.layoutConfig?.weightCategory || {}) },
+    championshipDate: { ...baseDefaultLayout.championshipDate, ...(template?.layoutConfig?.championshipDate || {}) },
+    kukkiwonId: { ...baseDefaultLayout.kukkiwonId, ...(template?.layoutConfig?.kukkiwonId || {}) },
+    certificateNumber: { ...baseDefaultLayout.certificateNumber, ...(template?.layoutConfig?.certificateNumber || {}) },
+    issueDate: { ...baseDefaultLayout.issueDate, ...(template?.layoutConfig?.issueDate || {}) },
+  };
 
   const issueDateFormatted = athlete.issueDate
     ? new Date(athlete.issueDate).toLocaleDateString('en-US', {
