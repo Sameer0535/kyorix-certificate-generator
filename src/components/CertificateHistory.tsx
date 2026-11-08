@@ -6,13 +6,9 @@ import {
   Download,
   Eye,
   Trash2,
-  Calendar,
-  Medal,
-  Award,
-  Filter,
-  CheckCircle,
-  Shield,
   FileSpreadsheet,
+  FileText,
+  Layers,
 } from 'lucide-react';
 
 interface CertificateHistoryProps {
@@ -31,7 +27,9 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
 
   const filtered = history.filter(record => {
     const matchesCategory =
-      selectedCategory === 'ALL' || record.athleteDetails.certificateType === selectedCategory;
+      selectedCategory === 'ALL' ||
+      record.athleteDetails.certificateType === selectedCategory ||
+      (selectedCategory === 'BULK' && record.isBulk);
 
     const term = searchTerm.toLowerCase();
     const matchesSearch =
@@ -66,8 +64,10 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
       'Academy Name',
       'Weight Category',
       'Certificate Type',
+      'Medal Result',
       'Championship Name',
       'Championship Date',
+      'Generation Source',
       'Generated Date',
     ];
 
@@ -78,8 +78,10 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
       `"${r.athleteDetails.academyName}"`,
       `"${r.athleteDetails.weightCategory}"`,
       `"${r.athleteDetails.certificateType}"`,
+      `"${r.athleteDetails.medalResult || ''}"`,
       `"${r.athleteDetails.championshipName}"`,
       r.athleteDetails.championshipDate,
+      r.isBulk ? 'Bulk Batch' : 'Single Entry',
       r.generatedAt,
     ]);
 
@@ -108,8 +110,8 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
             <h2 className="text-xl font-bold">Certificate Issuance History</h2>
           </div>
           <p className="text-xs text-slate-300 mt-1">
-            Complete audit trail of all athlete certificates generated and authorized through the
-            system.
+            Complete audit trail of all athlete certificates generated individually or via bulk Excel
+            imports.
           </p>
         </div>
 
@@ -154,7 +156,7 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
 
         {/* Category Pill Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-          {['ALL', 'Gold Medal', 'Silver Medal', 'Bronze Medal', 'Participation'].map(cat => (
+          {['ALL', 'Gold Medal', 'Silver Medal', 'Bronze Medal', 'Participation', 'BULK'].map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
@@ -164,7 +166,7 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200/70'
               }`}
             >
-              {cat === 'ALL' ? 'All Types' : cat}
+              {cat === 'ALL' ? 'All Records' : cat === 'BULK' ? 'Bulk Batches' : cat}
             </button>
           ))}
         </div>
@@ -177,7 +179,7 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
             <History className="w-10 h-10 text-slate-300 mx-auto mb-2" />
             <p className="text-sm font-bold text-slate-700">No certificate records found</p>
             <p className="text-xs text-slate-400 mt-0.5">
-              Generate a new certificate to establish an issuance record.
+              Generate certificates individually or via bulk import to establish audit records.
             </p>
           </div>
         ) : (
@@ -190,6 +192,7 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
                   <th className="py-3.5 px-4">Kukkiwon ID</th>
                   <th className="py-3.5 px-4">Academy / Club</th>
                   <th className="py-3.5 px-4">Category</th>
+                  <th className="py-3.5 px-4">Source</th>
                   <th className="py-3.5 px-4">Date Issued</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -223,6 +226,18 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
                         {record.athleteDetails.certificateType}
                       </span>
                     </td>
+                    <td className="py-3 px-4">
+                      {record.isBulk ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                          <Layers className="w-3 h-3 text-amber-600" />
+                          Bulk Batch
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                          Single Entry
+                        </span>
+                      )}
+                    </td>
                     <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
                       {new Date(record.generatedAt).toLocaleDateString()}
                     </td>
@@ -245,4 +260,3 @@ export const CertificateHistory: React.FC<CertificateHistoryProps> = ({
     </div>
   );
 };
-

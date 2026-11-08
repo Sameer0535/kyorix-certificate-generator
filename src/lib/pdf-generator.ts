@@ -20,7 +20,6 @@ export async function exportCertificateToPdf(
   } = options;
 
   try {
-    // Render the DOM element to canvas at high resolution
     const canvas = await html2canvas(element, {
       scale,
       useCORS: true,
@@ -33,7 +32,6 @@ export async function exportCertificateToPdf(
 
     const imgData = canvas.toDataURL('image/jpeg', quality);
 
-    // Create A4 PDF with exact orientation
     const pdf = new jsPDF({
       orientation,
       unit: 'mm',
@@ -50,6 +48,51 @@ export async function exportCertificateToPdf(
     return true;
   } catch (error) {
     console.error('Failed to generate PDF certificate:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generates an in-memory PDF Blob for bulk / batch zip packaging
+ */
+export async function generateCertificatePdfBlob(
+  element: HTMLElement,
+  options: ExportPdfOptions = {}
+): Promise<Blob> {
+  const {
+    quality = 0.95,
+    scale = 2.0, // optimal resolution and memory performance for batch generation
+    orientation = 'landscape',
+  } = options;
+
+  try {
+    const canvas = await html2canvas(element, {
+      scale,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', quality);
+
+    const pdf = new jsPDF({
+      orientation,
+      unit: 'mm',
+      format: 'a4',
+      compress: true,
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+
+    return pdf.output('blob');
+  } catch (error) {
+    console.error('Failed to generate certificate blob:', error);
     throw error;
   }
 }

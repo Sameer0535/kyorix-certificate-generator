@@ -4,12 +4,12 @@ import { KyorixLogo } from './KyorixLogo';
 import {
   LayoutDashboard,
   Award,
+  FileSpreadsheet,
   Layers,
   History,
   ShieldCheck,
   ChevronRight,
   Sparkles,
-  ExternalLink,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     label: string;
     subtext: string;
     icon: React.ReactNode;
+    badge?: string;
   }[] = [
     {
       id: 'dashboard',
@@ -39,9 +40,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'generate',
-      label: 'Generate Certificate',
-      subtext: 'Athlete Entry & PDF',
+      label: 'Single Certificate',
+      subtext: 'Individual Athlete Entry',
       icon: <Award className="w-4 h-4" />,
+    },
+    {
+      id: 'bulk',
+      label: 'Bulk Generation',
+      subtext: 'Excel / CSV & ZIP Export',
+      icon: <FileSpreadsheet className="w-4 h-4" />,
+      badge: 'Phase 3',
     },
     {
       id: 'templates',
@@ -79,16 +87,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <KyorixLogo size="md" />
             <div className="mt-3 flex items-center justify-between">
               <span className="text-[10px] font-mono tracking-wider uppercase text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
-                Phase 1 Production
+                Phase 3 Enterprise
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">v1.0.0</span>
+              <span className="text-[10px] text-slate-400 font-mono">v1.2.0</span>
             </div>
           </div>
 
           {/* Navigation Links */}
           <nav className="p-4 space-y-1.5">
             <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 px-3 block mb-2">
-              Main Operations
+              Operations Center
             </span>
             {navItems.map(item => {
               const isActive = currentTab === item.id;
@@ -116,7 +124,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       {item.icon}
                     </span>
                     <div>
-                      <p className="text-xs">{item.label}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-xs">{item.label}</p>
+                        {item.badge && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[10px] text-slate-400">{item.subtext}</p>
                     </div>
                   </div>
@@ -135,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="text-xs font-bold text-slate-200">Kukkiwon Verified</span>
             </div>
             <p className="text-[10px] text-slate-400 mt-1">
-              Compliant with World Taekwondo standards and official accreditation guidelines.
+              Compliant with World Taekwondo tournament accreditation & bulk issuance standards.
             </p>
           </div>
 
@@ -149,4 +164,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </>
   );
 };
-

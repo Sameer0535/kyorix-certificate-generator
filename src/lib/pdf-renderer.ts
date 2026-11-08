@@ -84,3 +84,4 @@ export async function renderPdfToImage(
     aspectRatio: unscaledViewport.width / unscaledViewport.height,
   };
 }
+

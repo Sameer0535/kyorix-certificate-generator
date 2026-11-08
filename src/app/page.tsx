@@ -25,6 +25,7 @@ import { CertificatePreview } from '@/components/CertificatePreview';
 import { TemplateManager } from '@/components/TemplateManager';
 import { CertificateHistory } from '@/components/CertificateHistory';
 import { TemplateCalibrator } from '@/components/TemplateCalibrator';
+import { BulkGenerator } from '@/components/BulkGenerator';
 
 export default function Home() {
   const [currentTab, setCurrentTab] = useState<NavigationTab>('dashboard');
@@ -52,7 +53,7 @@ export default function Home() {
     setIsClientLoaded(true);
   }, []);
 
-  // When athlete form is submitted
+  // When single athlete form is submitted
   const handleAthleteFormSubmit = (details: AthleteDetails) => {
     const certNum =
       details.certificateNumber ||
@@ -74,7 +75,7 @@ export default function Home() {
     setIsPreviewMode(true);
   };
 
-  // When a certificate is downloaded / saved
+  // When a certificate is downloaded / saved individually
   const handleCertificateGenerated = (
     athlete: AthleteDetails,
     template: CertificateTemplate | null
@@ -90,6 +91,31 @@ export default function Home() {
 
     const updatedHistory = addHistoryRecord(record);
     setHistory(updatedHistory);
+  };
+
+  // Phase 3: When a bulk batch completes
+  const handleBatchCompleted = (batchRecords: GeneratedCertificateRecord[]) => {
+    let currentHistory = getStoredHistory();
+    for (const rec of batchRecords) {
+      currentHistory = [rec, ...currentHistory];
+    }
+    try {
+      localStorage.setItem('kyorix_certificate_history_v1', JSON.stringify(currentHistory));
+    } catch (e) {
+      console.warn('LocalStorage limit reached when saving batch history', e);
+    }
+    setHistory(currentHistory);
+  };
+
+  // Phase 3: Preview athlete from bulk table
+  const handlePreviewAthleteFromBulk = (
+    athlete: AthleteDetails,
+    template: CertificateTemplate | null
+  ) => {
+    setActiveAthlete(athlete);
+    setSelectedPreviewTemplate(template);
+    setCurrentTab('generate');
+    setIsPreviewMode(true);
   };
 
   // Template management actions
@@ -196,7 +222,7 @@ export default function Home() {
                 />
               )}
 
-              {/* TAB 2: GENERATE CERTIFICATE & PREVIEW */}
+              {/* TAB 2: GENERATE SINGLE CERTIFICATE & PREVIEW */}
               {currentTab === 'generate' && (
                 <div>
                   {!isPreviewMode ? (
@@ -222,7 +248,18 @@ export default function Home() {
                 </div>
               )}
 
-              {/* TAB 3: MANAGE TEMPLATES */}
+              {/* TAB 3: BULK GENERATION & EXCEL IMPORT (PHASE 3) */}
+              {currentTab === 'bulk' && (
+                <div className="max-w-6xl mx-auto">
+                  <BulkGenerator
+                    templates={templates}
+                    onBatchCompleted={handleBatchCompleted}
+                    onPreviewAthlete={handlePreviewAthleteFromBulk}
+                  />
+                </div>
+              )}
+
+              {/* TAB 4: MANAGE TEMPLATES */}
               {currentTab === 'templates' && (
                 <div className="max-w-6xl mx-auto">
                   <TemplateManager
@@ -234,7 +271,7 @@ export default function Home() {
                 </div>
               )}
 
-              {/* TAB 4: CERTIFICATE HISTORY */}
+              {/* TAB 5: CERTIFICATE HISTORY */}
               {currentTab === 'history' && (
                 <div className="max-w-6xl mx-auto">
                   <CertificateHistory

@@ -12,6 +12,7 @@ export interface AthleteDetails {
   championshipName: string;
   championshipDate: string;
   certificateType: CertificateType;
+  medalResult?: string;
   certificateNumber?: string;
   issueDate?: string;
 }
@@ -73,6 +74,51 @@ export interface GeneratedCertificateRecord {
   templateName?: string;
   generatedAt: string;
   certificateNumber: string;
+  isBulk?: boolean;
+  batchId?: string;
 }
 
-export type NavigationTab = 'dashboard' | 'generate' | 'templates' | 'history' | 'calibrate';
+export type NavigationTab =
+  | 'dashboard'
+  | 'generate'
+  | 'bulk'
+  | 'templates'
+  | 'history'
+  | 'calibrate';
+
+export interface BulkAthleteRow {
+  rowId: string;
+  originalIndex: number;
+  kukkiwonId: string;
+  athleteName: string;
+  academyName: string;
+  weightCategory: string;
+  championshipName: string;
+  championshipDate: string;
+  certificateType: CertificateType | string;
+  medalResult?: string;
+
+  // Validation
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  isDuplicateKukkiwonId?: boolean;
+
+  // Generation status
+  generationStatus?: 'pending' | 'processing' | 'success' | 'failed';
+  certificateNumber?: string;
+  pdfBlob?: Blob;
+  fileName?: string;
+  errorMessage?: string;
+  selectedForDownload?: boolean;
+}
+
+export interface BulkBatchSummary {
+  total: number;
+  valid: number;
+  invalid: number;
+  duplicates: number;
+  completed: number;
+  failed: number;
+  inProgress: boolean;
+}

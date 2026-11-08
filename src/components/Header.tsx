@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationTab } from '@/types';
-import { Menu, Award, Clock, Sparkles } from 'lucide-react';
+import { Menu, Award, FileSpreadsheet } from 'lucide-react';
 
 interface HeaderProps {
   currentTab: NavigationTab;
@@ -22,13 +22,18 @@ export const Header: React.FC<HeaderProps> = ({
         };
       case 'generate':
         return {
-          title: 'Generate Athlete Certificate',
-          subtitle: 'Enter competitor credentials and generate downloadable high-res PDF awards',
+          title: 'Generate Single Certificate',
+          subtitle: 'Enter individual competitor credentials and generate downloadable high-res PDF awards',
+        };
+      case 'bulk':
+        return {
+          title: 'Bulk Certificate Generation & Excel Import',
+          subtitle: 'Upload tournament rosters (.xlsx, .xls, .csv), validate records, and batch export ZIP packages',
         };
       case 'templates':
         return {
           title: 'Manage Certificate Templates',
-          subtitle: 'Upload, inspect, and assign PNG, JPG, or PDF blanks to tournament categories',
+          subtitle: 'Upload, inspect, and calibrate PNG, JPG, or PDF blanks to tournament categories',
         };
       case 'history':
         return {
@@ -71,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
           <span>System Online</span>
         </div>
 
-        {currentTab !== 'generate' && (
+        {currentTab !== 'generate' && currentTab !== 'bulk' && (
           <button
             onClick={onQuickGenerate}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition active:scale-95"
@@ -85,4 +90,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-
