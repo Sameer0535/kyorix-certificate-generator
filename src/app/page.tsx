@@ -12,6 +12,7 @@ import {
   getStoredTemplates,
   saveTemplate,
   deleteTemplate,
+  renameTemplate,
   getStoredHistory,
   addHistoryRecord,
   clearHistoryRecords,
@@ -43,7 +44,7 @@ export default function Home() {
   );
   const [isPreviewMode, setIsPreviewMode] = useState<boolean>(false);
 
-  // Phase 2 Calibrator state
+  // Calibrator state
   const [calibratingTemplate, setCalibratingTemplate] = useState<CertificateTemplate | null>(null);
 
   // Initialize client-side stored data
@@ -124,6 +125,14 @@ export default function Home() {
     setTemplates(updated);
     if (selectedPreviewTemplate?.id === template.id) {
       setSelectedPreviewTemplate(template);
+    }
+  };
+
+  const handleRenameTemplate = (id: string, newName: string) => {
+    const updated = renameTemplate(id, newName);
+    setTemplates(updated);
+    if (selectedPreviewTemplate?.id === id) {
+      setSelectedPreviewTemplate(prev => (prev ? { ...prev, name: newName } : null));
     }
   };
 
@@ -248,7 +257,7 @@ export default function Home() {
                 </div>
               )}
 
-              {/* TAB 3: BULK GENERATION & EXCEL IMPORT (PHASE 3) */}
+              {/* TAB 3: BULK GENERATION & EXCEL IMPORT */}
               {currentTab === 'bulk' && (
                 <div className="max-w-6xl mx-auto">
                   <BulkGenerator
@@ -259,7 +268,7 @@ export default function Home() {
                 </div>
               )}
 
-              {/* TAB 4: MANAGE TEMPLATES */}
+              {/* TAB 4: MANAGE TEMPLATES (PHASE 4 ENHANCED) */}
               {currentTab === 'templates' && (
                 <div className="max-w-6xl mx-auto">
                   <TemplateManager
@@ -267,6 +276,7 @@ export default function Home() {
                     onSaveTemplate={handleSaveTemplate}
                     onDeleteTemplate={handleDeleteTemplate}
                     onOpenCalibrator={t => setCalibratingTemplate(t)}
+                    onRenameTemplate={handleRenameTemplate}
                   />
                 </div>
               )}
@@ -286,7 +296,7 @@ export default function Home() {
         </main>
       </div>
 
-      {/* PHASE 2 CALIBRATOR MODAL */}
+      {/* PHASE 2 & 4 CALIBRATOR MODAL */}
       {calibratingTemplate && (
         <TemplateCalibrator
           initialTemplate={calibratingTemplate}

@@ -1,59 +1,13 @@
-import { CertificateTemplate, GeneratedCertificateRecord, CertificateType } from '@/types';
+import {
+  CertificateTemplate,
+  GeneratedCertificateRecord,
+  CertificateType,
+  SupportedFileType,
+} from '@/types';
+import { TEMPORARY_TEMPLATES } from './templates-generator';
 
-const TEMPLATES_KEY = 'kyorix_certificate_templates_v1';
+const TEMPLATES_KEY = 'kyorix_certificate_templates_v2'; // v2 for Phase 4 template integration
 const HISTORY_KEY = 'kyorix_certificate_history_v1';
-
-// Built-in default templates for out-of-the-box readiness
-export const DEFAULT_TEMPLATES: CertificateTemplate[] = [
-  {
-    id: 'default-gold-podium',
-    name: 'Kyorix Championship Gold Medalist (Official)',
-    fileName: 'kyorix_gold_podium_template.png',
-    fileType: 'image/png',
-    fileSize: 245000,
-    dataUrl: '', // uses SVG-rendered background if empty
-    assignedTypes: ['Gold Medal'],
-    uploadedAt: '2026-03-01T10:00:00Z',
-    description: 'Official gold border with dual crest watermark and laurel wreath emblem.',
-    isDefault: true,
-  },
-  {
-    id: 'default-silver-podium',
-    name: 'Kyorix Championship Silver Medalist (Official)',
-    fileName: 'kyorix_silver_podium_template.png',
-    fileType: 'image/png',
-    fileSize: 240000,
-    dataUrl: '',
-    assignedTypes: ['Silver Medal'],
-    uploadedAt: '2026-03-01T10:00:00Z',
-    description: 'Official silver metallic styling with championship federation insignia.',
-    isDefault: true,
-  },
-  {
-    id: 'default-bronze-podium',
-    name: 'Kyorix Championship Bronze Medalist (Official)',
-    fileName: 'kyorix_bronze_podium_template.png',
-    fileType: 'image/png',
-    fileSize: 238000,
-    dataUrl: '',
-    assignedTypes: ['Bronze Medal'],
-    uploadedAt: '2026-03-01T10:00:00Z',
-    description: 'Official bronze heraldic styling with martial arts combat watermark.',
-    isDefault: true,
-  },
-  {
-    id: 'default-participation',
-    name: 'Kyorix Official Participation Certificate',
-    fileName: 'kyorix_participation_standard.png',
-    fileType: 'image/png',
-    fileSize: 215000,
-    dataUrl: '',
-    assignedTypes: ['Participation'],
-    uploadedAt: '2026-03-01T10:00:00Z',
-    description: 'Standard taekwondo athlete participation certificate with navy and gold guilloche border.',
-    isDefault: true,
-  },
-];
 
 export const INITIAL_HISTORY: GeneratedCertificateRecord[] = [
   {
@@ -67,11 +21,12 @@ export const INITIAL_HISTORY: GeneratedCertificateRecord[] = [
       championshipName: '2026 Kyorix National Taekwondo Open Championship',
       championshipDate: '2026-05-15',
       certificateType: 'Gold Medal',
+      medalResult: '1st Place • Gold Medalist',
       certificateNumber: 'KYX-2026-0891',
       issueDate: '2026-05-16',
     },
-    templateId: 'default-gold-podium',
-    templateName: 'Kyorix Championship Gold Medalist (Official)',
+    templateId: 'temp-gold-medal',
+    templateName: 'Kyorix Gold Medalist (Temporary Template)',
     generatedAt: '2026-05-16T14:30:00Z',
   },
   {
@@ -85,11 +40,12 @@ export const INITIAL_HISTORY: GeneratedCertificateRecord[] = [
       championshipName: '2026 Kyorix National Taekwondo Open Championship',
       championshipDate: '2026-05-15',
       certificateType: 'Silver Medal',
+      medalResult: '2nd Place • Silver Medalist',
       certificateNumber: 'KYX-2026-0892',
       issueDate: '2026-05-16',
     },
-    templateId: 'default-silver-podium',
-    templateName: 'Kyorix Championship Silver Medalist (Official)',
+    templateId: 'temp-silver-medal',
+    templateName: 'Kyorix Silver Medalist (Temporary Template)',
     generatedAt: '2026-05-16T15:10:00Z',
   },
   {
@@ -106,25 +62,25 @@ export const INITIAL_HISTORY: GeneratedCertificateRecord[] = [
       certificateNumber: 'KYX-2026-0893',
       issueDate: '2026-05-16',
     },
-    templateId: 'default-participation',
-    templateName: 'Kyorix Official Participation Certificate',
+    templateId: 'temp-participation',
+    templateName: 'Kyorix Participation (Temporary Template)',
     generatedAt: '2026-05-16T16:05:00Z',
   },
 ];
 
 export function getStoredTemplates(): CertificateTemplate[] {
-  if (typeof window === 'undefined') return DEFAULT_TEMPLATES;
+  if (typeof window === 'undefined') return TEMPORARY_TEMPLATES;
   try {
     const data = localStorage.getItem(TEMPLATES_KEY);
     if (!data) {
-      localStorage.setItem(TEMPLATES_KEY, JSON.stringify(DEFAULT_TEMPLATES));
-      return DEFAULT_TEMPLATES;
+      localStorage.setItem(TEMPLATES_KEY, JSON.stringify(TEMPORARY_TEMPLATES));
+      return TEMPORARY_TEMPLATES;
     }
     const parsed = JSON.parse(data);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_TEMPLATES;
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : TEMPORARY_TEMPLATES;
   } catch (err) {
     console.error('Error reading templates from localStorage', err);
-    return DEFAULT_TEMPLATES;
+    return TEMPORARY_TEMPLATES;
   }
 }
 
@@ -143,6 +99,55 @@ export function saveTemplate(template: CertificateTemplate): CertificateTemplate
   return updated;
 }
 
+export function renameTemplate(id: string, newName: string): CertificateTemplate[] {
+  if (typeof window === 'undefined') return [];
+  const current = getStoredTemplates();
+  const updated = current.map(t => (t.id === id ? { ...t, name: newName.trim() } : t));
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function toggleTemplateDisabled(id: string, isDisabled: boolean): CertificateTemplate[] {
+  if (typeof window === 'undefined') return [];
+  const current = getStoredTemplates();
+  const updated = current.map(t => (t.id === id ? { ...t, isDefault: !isDisabled } : t));
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+/**
+ * Replaces a template asset with an uploaded file while strictly preserving
+ * existing name, assignments, and Phase 2 text-position configurations.
+ */
+export function replaceTemplateAssetPreservingLayout(
+  id: string,
+  asset: {
+    dataUrl: string;
+    fileName: string;
+    fileType: SupportedFileType;
+    fileSize: number;
+    previewImageUrl?: string;
+  }
+): CertificateTemplate[] {
+  if (typeof window === 'undefined') return [];
+  const current = getStoredTemplates();
+  const target = current.find(t => t.id === id);
+  if (!target) return current;
+
+  const updatedTarget: CertificateTemplate = {
+    ...target,
+    dataUrl: asset.dataUrl,
+    fileName: asset.fileName,
+    fileType: asset.fileType,
+    fileSize: asset.fileSize,
+    previewImageUrl: asset.previewImageUrl,
+    uploadedAt: new Date().toISOString(),
+    isDefault: false, // marked as user-supplied
+  };
+
+  return saveTemplate(updatedTarget);
+}
+
 export function deleteTemplate(id: string): CertificateTemplate[] {
   if (typeof window === 'undefined') return [];
   const current = getStoredTemplates();
@@ -153,10 +158,10 @@ export function deleteTemplate(id: string): CertificateTemplate[] {
 
 export function getTemplateForCertificateType(type: CertificateType): CertificateTemplate | null {
   const templates = getStoredTemplates();
-  // Find custom uploaded template first
+  // Find non-disabled custom template first
   const custom = templates.find(t => !t.isDefault && t.assignedTypes.includes(type));
   if (custom) return custom;
-  // Fall back to default
+  // Fall back to temporary/default template
   const def = templates.find(t => t.assignedTypes.includes(type));
   return def || templates[0] || null;
 }
@@ -181,7 +186,11 @@ export function addHistoryRecord(record: GeneratedCertificateRecord): GeneratedC
   if (typeof window === 'undefined') return [];
   const current = getStoredHistory();
   const updated = [record, ...current];
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.warn('LocalStorage quota limit reached', e);
+  }
   return updated;
 }
 
@@ -189,4 +198,3 @@ export function clearHistoryRecords(): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(HISTORY_KEY, JSON.stringify([]));
 }
-

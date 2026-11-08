@@ -23,23 +23,20 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
   const canvasWidth = isPortrait ? 742 : 1050;
   const canvasHeight = isPortrait ? 1050 : 742;
 
-  // Background visual image: rendered PDF previewImageUrl or PNG/JPG dataUrl
-  const hasCustomImage =
-    template?.previewImageUrl ||
-    (template?.dataUrl && template.dataUrl.length > 0 && template.fileType !== 'application/pdf');
-
-  const backgroundImage = template?.previewImageUrl || (template?.dataUrl && template.fileType !== 'application/pdf' ? template.dataUrl : null);
+  const isParticipation = athlete.certificateType === 'Participation';
+  const backgroundImage =
+    template?.previewImageUrl || (template?.dataUrl ? template.dataUrl : null);
 
   const useCustomLayout = template?.layoutConfig && template.layoutConfig.useCustomLayout;
   const layout = template?.layoutConfig;
 
   // Generate QR code for verification
   useEffect(() => {
-    const qrPayload = `KYORIX-VERIFIED:${certNumber}:${athlete.kukkiwonId}:${athlete.athleteName}`;
+    const qrPayload = `KYORIX-VERIFIED:${certNumber}:${athlete.kukkiwonId}:${athlete.athleteName}:${athlete.certificateType}`;
     generateQrCodeDataUrl(qrPayload).then(url => {
       setQrDataUrl(url);
     });
-  }, [certNumber, athlete.kukkiwonId, athlete.athleteName]);
+  }, [certNumber, athlete.kukkiwonId, athlete.athleteName, athlete.certificateType]);
 
   const issueDateFormatted = athlete.issueDate
     ? new Date(athlete.issueDate).toLocaleDateString('en-US', {
@@ -61,7 +58,27 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
       })
     : 'Championship Date';
 
-  // Medal styling configurations for default mode
+  // Medal distinction label
+  const getMedalDisplay = (): string => {
+    if (isParticipation) return ''; // Participation certificates must NOT display medal positions
+    if (athlete.medalResult && athlete.medalResult.trim()) {
+      return athlete.medalResult.toUpperCase();
+    }
+    switch (athlete.certificateType) {
+      case 'Gold Medal':
+        return '1ST PLACE • GOLD MEDALIST';
+      case 'Silver Medal':
+        return '2ND PLACE • SILVER MEDALIST';
+      case 'Bronze Medal':
+        return '3RD PLACE • BRONZE MEDALIST';
+      default:
+        return '';
+    }
+  };
+
+  const medalDisplay = getMedalDisplay();
+
+  // Styling config for default fallbacks
   const getTypeConfig = (type: CertificateType) => {
     switch (type) {
       case 'Gold Medal':
@@ -106,13 +123,12 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
 
   const config = getTypeConfig(athlete.certificateType);
 
-  // Helper to render individual calibrated field
   const renderCalibratedField = (
     field: FieldPositionConfig | undefined,
     value: string,
     key: string
   ) => {
-    if (!field || !field.visible) return null;
+    if (!field || !field.visible || !value) return null;
 
     const fontClass =
       field.fontFamily === 'serif'
@@ -159,7 +175,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
         fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       }}
     >
-      {/* Background layer: If custom uploaded image/PDF template exists, render it */}
+      {/* Background layer: Render template SVG/PNG/JPG/PDF image */}
       {backgroundImage ? (
         <div className="absolute inset-0 z-0">
           <img
@@ -174,14 +190,10 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
           <div className="absolute inset-4 border-[5px] border-[#0A1128] pointer-events-none" />
           <div className="absolute inset-6 border-[2px] border-[#D4AF37] pointer-events-none" />
           <div className="absolute inset-8 border border-dashed border-[#D4AF37]/50 pointer-events-none" />
-
-          {/* Corner Ornaments */}
           <div className="absolute top-6 left-6 w-14 h-14 border-t-4 border-l-4 border-[#D4AF37] pointer-events-none" />
           <div className="absolute top-6 right-6 w-14 h-14 border-t-4 border-r-4 border-[#D4AF37] pointer-events-none" />
           <div className="absolute bottom-6 left-6 w-14 h-14 border-b-4 border-l-4 border-[#D4AF37] pointer-events-none" />
           <div className="absolute bottom-6 right-6 w-14 h-14 border-b-4 border-r-4 border-[#D4AF37] pointer-events-none" />
-
-          {/* Center watermark */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035]">
             <span className="text-[120px] font-black tracking-widest text-[#0A1128]">KYORIX</span>
           </div>
@@ -213,21 +225,16 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
             'championshipDate'
           )}
 
-          {/* 7. Medal Result */}
-          {renderCalibratedField(
-            layout.medalResult,
-            athlete.certificateType.toUpperCase(),
-            'medalResult'
-          )}
+          {/* 7. Medal Result: ONLY rendered if NOT a participation certificate */}
+          {!isParticipation &&
+            medalDisplay &&
+            renderCalibratedField(layout.medalResult, medalDisplay, 'medalResult')}
 
-          {/* Meta Fields */}
+          {/* 8. Certificate Serial Number */}
           {layout.certificateNumber &&
-            renderCalibratedField(
-              layout.certificateNumber,
-              certNumber,
-              'certificateNumber'
-            )}
+            renderCalibratedField(layout.certificateNumber, certNumber, 'certificateNumber')}
 
+          {/* 9. Issue Date */}
           {layout.issueDate &&
             renderCalibratedField(layout.issueDate, issueDateFormatted, 'issueDate')}
 
@@ -260,7 +267,6 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
       ) : (
         /* RENDER MODE B: Default Standard Kyorix Frame */
         <div className="relative z-10 w-full h-full p-12 flex flex-col justify-between">
-          {/* Header */}
           <div className="text-center pt-2">
             <div className="flex items-center justify-between px-8 mb-3">
               <div className="flex items-center gap-2 text-left">
@@ -277,11 +283,13 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
                 </div>
               </div>
 
-              <div
-                className={`px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase shadow-sm border border-amber-400/40 bg-gradient-to-r ${config.medalBg} text-slate-900`}
-              >
-                {config.badge}
-              </div>
+              {!isParticipation && (
+                <div
+                  className={`px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase shadow-sm border border-amber-400/40 bg-gradient-to-r ${config.medalBg} text-slate-900`}
+                >
+                  {config.badge}
+                </div>
+              )}
 
               <div className="text-right">
                 <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
@@ -306,7 +314,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
             </p>
           </div>
 
-          {/* Athlete Name Section */}
+          {/* Athlete Name */}
           <div className="text-center my-1">
             <div className="inline-block max-w-[850px] px-8 py-1.5 border-b-2 border-[#D4AF37]">
               <h2 className="text-4xl font-extrabold tracking-wide text-[#0A1128] capitalize font-serif">
@@ -321,7 +329,7 @@ export const CertificateRenderer: React.FC<CertificateRendererProps> = ({
             </p>
           </div>
 
-          {/* Details Statement */}
+          {/* Details */}
           <div className="max-w-[780px] mx-auto text-center px-6">
             <p className="text-[13px] leading-relaxed text-slate-700">{config.awardPhrase}</p>
             <p className="text-lg font-black uppercase tracking-wide text-[#0A1128] mt-1">

@@ -15,6 +15,11 @@ import {
   Eye,
   Layers,
   Sparkles,
+  Edit2,
+  Power,
+  PowerOff,
+  Maximize2,
+  X,
 } from 'lucide-react';
 
 interface TemplateManagerProps {
@@ -22,6 +27,7 @@ interface TemplateManagerProps {
   onSaveTemplate: (template: CertificateTemplate) => void;
   onDeleteTemplate: (id: string) => void;
   onOpenCalibrator: (template: CertificateTemplate) => void;
+  onRenameTemplate: (id: string, newName: string) => void;
 }
 
 const ALL_CERT_TYPES: CertificateType[] = [
@@ -36,13 +42,20 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
   onSaveTemplate,
   onDeleteTemplate,
   onOpenCalibrator,
+  onRenameTemplate,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [replacingId, setReplacingId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
 
-  // New template modal/drawer state
+  // Full-screen preview modal state
+  const [previewingTemplate, setPreviewingTemplate] = useState<CertificateTemplate | null>(null);
+
+  // Rename modal state
+  const [renamingTemplate, setRenamingTemplate] = useState<{ id: string; name: string } | null>(null);
+
+  // New template modal state
   const [templateName, setTemplateName] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<CertificateType[]>(['Gold Medal']);
   const [pendingFileDataUrl, setPendingFileDataUrl] = useState<string | null>(null);
@@ -85,7 +98,6 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
         setTemplateName(file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '));
       }
 
-      // If PDF, render its page to image
       if (file.type === 'application/pdf') {
         setIsProcessingPdf(true);
         try {
@@ -100,7 +112,6 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
           setIsProcessingPdf(false);
         }
       } else {
-        // If PNG/JPG image, determine dimensions
         const img = new Image();
         img.onload = () => {
           const isLandscape = img.width >= img.height;
@@ -182,6 +193,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
     setIsProcessingPdf(false);
   };
 
+  // Replace template while strictly preserving coordinates & assignments
   const handleTriggerReplace = (templateId: string) => {
     setReplacingId(templateId);
     if (replaceInputRef.current) {
@@ -197,7 +209,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
 
     const validTypes: SupportedFileType[] = ['image/png', 'image/jpeg', 'application/pdf'];
     if (!validTypes.includes(file.type as SupportedFileType)) {
-      alert('Unsupported file type. Please provide PNG, JPG, or PDF.');
+      alert('Unsupported file type. Please upload a PNG, JPG, or PDF certificate design.');
       return;
     }
 
@@ -229,6 +241,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
         });
       }
 
+      // PRESERVE layoutConfig, name, and assignments!
       const updated: CertificateTemplate = {
         ...target,
         fileName: file.name,
@@ -237,11 +250,15 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
         dataUrl,
         previewImageUrl: previewUrl,
         uploadedAt: new Date().toISOString(),
-        isDefault: false,
+        isDefault: false, // marked as official replaced asset
         orientation,
         aspectRatio,
         layoutConfig: target.layoutConfig
-          ? { ...target.layoutConfig, orientation, aspectRatio }
+          ? {
+              ...target.layoutConfig,
+              orientation,
+              aspectRatio,
+            }
           : undefined,
       };
 
@@ -268,6 +285,12 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
       ...template,
       assignedTypes: updatedTypes,
     });
+  };
+
+  const handleSaveRename = () => {
+    if (!renamingTemplate || !renamingTemplate.name.trim()) return;
+    onRenameTemplate(renamingTemplate.id, renamingTemplate.name.trim());
+    setRenamingTemplate(null);
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -307,10 +330,14 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
                 <Layers className="w-5 h-5" />
               </span>
               <h2 className="text-xl font-bold">Certificate Template Repository</h2>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                Phase 4 Ready
+              </span>
             </div>
             <p className="text-xs text-slate-300 mt-1 max-w-xl">
-              Upload official certificate backdrops in PNG, JPG, or PDF. Assign templates to
-              individual podium or participation categories and calibrate exact text coordinates.
+              Temporary templates for Gold, Silver, Bronze, and Participation are active. You can
+              rename, preview, calibrate positions, or replace any temporary template with your
+              official design whenever ready.
             </p>
           </div>
 
@@ -319,7 +346,7 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
             className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold text-xs tracking-wider uppercase shadow-lg shadow-amber-500/20 flex items-center gap-2 transition"
           >
             <Upload className="w-4 h-4" />
-            Upload New Template
+            Upload Additional Template
           </button>
         </div>
 
@@ -351,114 +378,101 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
         </div>
       </div>
 
-      {/* Upload Configuration Modal */}
-      {isUploading && pendingFileMeta && (
+      {/* RENAME MODAL */}
+      {renamingTemplate && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95">
             <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
-              <h3 className="font-bold text-base flex items-center gap-2">
-                <Tag className="w-4 h-4 text-amber-400" />
-                Configure Uploaded Template
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                <Edit2 className="w-4 h-4 text-amber-400" />
+                Rename Template
               </h3>
-              <button
-                onClick={handleResetModal}
-                className="text-slate-400 hover:text-white text-sm"
-              >
+              <button onClick={() => setRenamingTemplate(null)} className="text-slate-400 hover:text-white">
                 ✕
               </button>
             </div>
-
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1.5">
                   Template Name
                 </label>
                 <input
                   type="text"
-                  value={templateName}
-                  onChange={e => setTemplateName(e.target.value)}
-                  placeholder="e.g. 2026 Gold Medalist Official A4"
-                  className="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm focus:border-amber-500 focus:outline-none"
+                  value={renamingTemplate.name}
+                  onChange={e => setRenamingTemplate({ ...renamingTemplate, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:border-amber-500 focus:outline-none"
+                  autoFocus
                 />
               </div>
-
-              {/* Preview & File Info */}
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex items-center gap-3">
-                {pendingPreviewUrl ? (
-                  <img
-                    src={pendingPreviewUrl}
-                    alt="Preview"
-                    className="w-14 h-10 object-cover rounded border border-slate-300 shadow-sm"
-                  />
-                ) : pendingFileMeta.type === 'application/pdf' ? (
-                  <FileText className="w-8 h-8 text-rose-500 flex-shrink-0" />
-                ) : (
-                  <FileImage className="w-8 h-8 text-amber-600 flex-shrink-0" />
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-slate-800 truncate">{pendingFileMeta.name}</p>
-                  <p className="text-[11px] text-slate-500">
-                    {formatFileSize(pendingFileMeta.size)} • {pendingOrientation.toUpperCase()} (
-                    {pendingAspectRatio.toFixed(2)})
-                  </p>
-                  {isProcessingPdf && (
-                    <p className="text-[10px] text-amber-600 font-bold animate-pulse mt-0.5">
-                      Rendering PDF page 1 to high-res canvas...
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Assign to categories */}
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 mb-2">
-                  Assign to Certificate Types:
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {ALL_CERT_TYPES.map(type => {
-                    const isAssigned = selectedTypes.includes(type);
-                    return (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => {
-                          if (isAssigned) {
-                            setSelectedTypes(prev => prev.filter(t => t !== type));
-                          } else {
-                            setSelectedTypes(prev => [...prev, type]);
-                          }
-                        }}
-                        className={`p-2.5 rounded-lg border text-xs font-bold text-left flex items-center justify-between transition ${
-                          isAssigned
-                            ? 'bg-amber-50 border-amber-400 text-amber-900'
-                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                        }`}
-                      >
-                        <span>{type}</span>
-                        {isAssigned && <Check className="w-4 h-4 text-amber-600" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
             </div>
-
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+            <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={handleResetModal}
+                onClick={() => setRenamingTemplate(null)}
                 className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200/60"
               >
                 Cancel
               </button>
               <button
                 type="button"
-                onClick={handleConfirmUpload}
-                disabled={isProcessingPdf}
-                className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider disabled:opacity-50"
+                onClick={handleSaveRename}
+                className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider"
               >
-                Save & Assign Template
+                Save Name
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FULLSCREEN PREVIEW MODAL */}
+      {previewingTemplate && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-950 rounded-2xl shadow-2xl border border-slate-800 max-w-5xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <Maximize2 className="w-4 h-4 text-amber-400" />
+                <h3 className="font-bold text-sm">{previewingTemplate.name}</h3>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                  {previewingTemplate.orientation || 'LANDSCAPE'}
+                </span>
+              </div>
+              <button
+                onClick={() => setPreviewingTemplate(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-8 flex items-center justify-center overflow-auto bg-[#050814]">
+              <div className="shadow-2xl rounded-sm overflow-hidden max-h-[70vh] border border-slate-700">
+                <img
+                  src={
+                    previewingTemplate.previewImageUrl ||
+                    previewingTemplate.dataUrl ||
+                    ''
+                  }
+                  alt={previewingTemplate.name}
+                  className="max-h-[70vh] object-contain"
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-3.5 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <span>File: {previewingTemplate.fileName}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const t = previewingTemplate;
+                    setPreviewingTemplate(null);
+                    onOpenCalibrator(t);
+                  }}
+                  className="px-4 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold text-xs"
+                >
+                  Open in Calibrator
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -468,8 +482,11 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {templates.map(template => {
           const isPdf = template.fileType === 'application/pdf';
-          const visualImage = template.previewImageUrl || (template.dataUrl && !isPdf ? template.dataUrl : null);
+          const visualImage =
+            template.previewImageUrl ||
+            (template.dataUrl && !isPdf ? template.dataUrl : null);
           const isCalibrated = template.layoutConfig && template.layoutConfig.useCustomLayout;
+          const isTemporary = template.id.startsWith('temp-') || template.isDefault;
 
           return (
             <div
@@ -478,20 +495,13 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
             >
               <div>
                 {/* Visual Thumbnail Area */}
-                <div className="h-44 bg-gradient-to-br from-slate-900 to-slate-950 relative overflow-hidden flex items-center justify-center border-b border-slate-100">
+                <div className="h-48 bg-gradient-to-br from-slate-900 to-slate-950 relative overflow-hidden flex items-center justify-center border-b border-slate-100 group">
                   {visualImage ? (
                     <img
                       src={visualImage}
                       alt={template.name}
-                      className="w-full h-full object-cover opacity-90 hover:opacity-100 transition"
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition"
                     />
-                  ) : isPdf ? (
-                    <div className="text-center p-4">
-                      <div className="w-14 h-14 mx-auto rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-2">
-                        <FileText className="w-7 h-7" />
-                      </div>
-                      <span className="text-xs font-bold text-slate-200">PDF Document Template</span>
-                    </div>
                   ) : (
                     <div className="text-center p-4">
                       <div className="w-12 h-12 mx-auto rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-2">
@@ -503,18 +513,31 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
                     </div>
                   )}
 
+                  {/* Quick Preview Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewingTemplate(template)}
+                      className="px-3 py-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-900 text-xs font-bold shadow flex items-center gap-1.5 transition"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      Preview Blank
+                    </button>
+                  </div>
+
                   {/* Top Badges */}
                   <div className="absolute top-3 left-3 flex items-center gap-2">
-                    {template.isDefault && (
-                      <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-slate-950 shadow-sm">
-                        Default System
+                    {isTemporary ? (
+                      <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 shadow-sm border border-amber-300">
+                        Temporary Template
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-sm">
+                        Official Custom
                       </span>
                     )}
                     <span className="px-2 py-1 rounded-md text-[10px] font-mono font-semibold bg-black/60 text-slate-200 backdrop-blur-sm">
-                      {isPdf ? 'PDF (RENDERED)' : template.fileType.replace('image/', '').toUpperCase()}
-                    </span>
-                    <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase bg-slate-900/80 text-amber-400 border border-amber-400/30">
-                      {template.orientation || 'LANDSCAPE'}
+                      {isPdf ? 'PDF (RENDERED)' : 'A4 LANDSCAPE'}
                     </span>
                   </div>
 
@@ -532,6 +555,14 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
                     <h3 className="font-bold text-base text-slate-900 leading-snug">
                       {template.name}
                     </h3>
+                    <button
+                      type="button"
+                      onClick={() => setRenamingTemplate({ id: template.id, name: template.name })}
+                      className="p-1 text-slate-400 hover:text-amber-600 rounded transition"
+                      title="Rename Template"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5 truncate">
                     File: <span className="font-mono text-slate-700">{template.fileName}</span>
@@ -573,26 +604,30 @@ export const TemplateManager: React.FC<TemplateManagerProps> = ({
 
               {/* Action Toolbar */}
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                {/* Visual Calibrate Button */}
-                <button
-                  type="button"
-                  onClick={() => onOpenCalibrator(template)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold transition shadow-sm"
-                >
-                  <Sliders className="w-3.5 h-3.5 text-amber-400" />
-                  Calibrate Text Positions
-                </button>
-
                 <div className="flex items-center gap-2">
+                  {/* Calibrate Button */}
+                  <button
+                    type="button"
+                    onClick={() => onOpenCalibrator(template)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold transition shadow-sm"
+                  >
+                    <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                    Positioning
+                  </button>
+
+                  {/* Replace Button (Preserves Layout!) */}
                   <button
                     type="button"
                     onClick={() => handleTriggerReplace(template.id)}
-                    className="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg transition"
-                    title="Replace Template Blank"
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 transition"
+                    title="Replace with your official certificate blank without losing text positioning"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Replace Blank</span>
                   </button>
+                </div>
 
+                <div className="flex items-center gap-2">
                   {!template.isDefault && (
                     <button
                       type="button"
