@@ -1,6 +1,8 @@
 {
   "name": "kyorix-certificate-generator",
   "version": "0.1.0",
+  "description": "Professional Certificate Generator for Kyorix Sports Technology",
+  "author": "Kyorix Sports Technology",
   "private": true,
   "main": "electron/main.js",
   "scripts": {
@@ -10,12 +12,13 @@
     "lint": "next lint",
     "test": "node scratch/qa_suite.js",
     "app:start": "electron .",
-    "app:build": "next build && electron-builder --win",
+    "app:build": "electron-builder --win",
     "app:package": "electron-builder --dir"
   },
   "build": {
     "appId": "com.kyorix.certificategenerator",
     "productName": "Kyorix Certificate Generator",
+    "asar": true,
     "directories": {
       "output": "dist"
     },
@@ -23,7 +26,8 @@
       "out/**/*",
       "electron/**/*",
       "assets/**/*",
-      "public/**/*"
+      "public/**/*",
+      "!**/node_modules/**/*"
     ],
     "win": {
       "target": [
@@ -59,6 +63,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3"

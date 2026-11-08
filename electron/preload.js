@@ -5,3 +5,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   version: process.versions.electron,
   print: () => ipcRenderer.send('print-certificate'),
 });
+
